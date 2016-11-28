@@ -26,6 +26,7 @@ namespace Serilog.Sinks.Loggr
     {
         readonly IFormatProvider _formatProvider;
         readonly string _userNameProperty;
+        readonly string _sourceProperty;
         readonly LogClient _client;
 
         /// <summary>
@@ -36,10 +37,11 @@ namespace Serilog.Sinks.Loggr
         /// <param name="apiKey">The api key as found on the loggr website.</param>
         /// <param name="useSecure">Use a SSL connection. By default this is false.</param>
         /// <param name="userNameProperty">Specifies the property name to read the username from. By default it is UserName.</param>
-        public LoggrSink(IFormatProvider formatProvider, string logKey, string apiKey, bool useSecure = false, string userNameProperty = "UserName")
+        public LoggrSink(IFormatProvider formatProvider, string logKey, string apiKey, bool useSecure = false, string userNameProperty = "UserName", string sourceProperty = "Source")
         {
             _formatProvider = formatProvider;
             _userNameProperty = userNameProperty;
+            _sourceProperty = sourceProperty;
 
             _client = new LogClient(logKey, apiKey, useSecure);
         }
@@ -52,7 +54,7 @@ namespace Serilog.Sinks.Loggr
         {
             // Create a new FluentEvent for Loggr based on the exception or the properties.
             var ev = logEvent.Exception != null
-                ? global::Loggr.Events.CreateFromException(logEvent.Exception)
+                ? global::Loggr.Events.CreateFromException(logEvent.Exception, logEvent.Properties)
                 : global::Loggr.Events.CreateFromVariable(logEvent.Properties);
 
             ev.Text(logEvent.RenderMessage(_formatProvider));
@@ -63,9 +65,13 @@ namespace Serilog.Sinks.Loggr
                 ev.User(logEvent.Properties[_userNameProperty].ToString());
             }
 
+            if (!String.IsNullOrWhiteSpace(_sourceProperty) && logEvent.Properties.ContainsKey(_sourceProperty) && logEvent.Properties[_sourceProperty] != null)
+            {
+                ev.Source(logEvent.Properties[_sourceProperty].ToString());
+            }
+
             ev.UseLogClient(_client);
             ev.Post(true);
-
         }
     }
 }

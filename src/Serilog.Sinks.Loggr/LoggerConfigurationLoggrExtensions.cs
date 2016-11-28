@@ -38,7 +38,7 @@ namespace Serilog
         /// <exception cref="ArgumentNullException">A required parameter is null.</exception>
         public static LoggerConfiguration Loggr(
             this LoggerSinkConfiguration loggerConfiguration,
-             string logKey, string apiKey, bool useSecure = false, string userNameProperty = "UserName",
+             string logKey, string apiKey, bool useSecure = false, string userNameProperty = "UserName", string sourceProperty = "Source",
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
             IFormatProvider formatProvider = null)
         {
@@ -51,7 +51,7 @@ namespace Serilog
                 throw new ArgumentNullException("apiKey");
 
             return loggerConfiguration.Sink(
-                new LoggrSink(formatProvider, logKey, apiKey, useSecure, userNameProperty),
+                new LoggrSink(formatProvider, logKey, apiKey, useSecure, userNameProperty, sourceProperty),
                 restrictedToMinimumLevel);
         }
 

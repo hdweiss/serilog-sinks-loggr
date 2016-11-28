@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Serilog": "2.3.0"
+  },
+
+  "frameworks": {
+    "netframework451": {
+      "imports": [ "dnx451" ],
+      "frameworkAssemblies": {
+        "System.Runtime": "",
+        "System.Net.Http": ""
+      }
+    },
+    "netstandard1.6": {
+      "imports": [ "dnxcore50", "win10-x64" ],
+      "dependencies": {
+        "System.Collections.Specialized": "4.0.1",
+        "System.Reflection.TypeExtensions": "4.1.0",
+        "System.Console": "4.0.0",
+        "System.Text.RegularExpressions": "4.1.0",
+        "System.Net.Http": "4.1.0"
+      }
+    }
+  }
+}
